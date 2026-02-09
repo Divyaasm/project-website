@@ -12,24 +12,12 @@ breadcrumbs:
 omit_from_search: true
 
 release_versions:
-  - version: 2.19.1
-    release_issue: 5323
-    release_retro_issue: 5324
-  - version: 3.0.0
-    release_issue: 3747
-    release_retro_issue: 5174
-  - version: 2.19.0
-    release_issue: 5152
-    release_retro_issue: 5153
-  - version: 2.18.0
-    release_issue: 5004
-    release_retro_issue: 5005
-  - version: 2.17.0
-    release_issue: 4908
-    release_retro_issue: 4909
-  - version: 2.16.0
-    release_issue: 4771
-    release_retro_issue: 4847
+  - version: 3.5.0
+    release_issue: 5897
+    release_retro_issue: 5898
+  - version: 2.19.4
+    release_issue: 5717
+    release_retro_issue: 5718
 
 metrics_height_desktop: 2000
 metrics_height_mobile: 6000
@@ -168,6 +156,8 @@ metrics_height_mobile: 6000
     <a href="#component-metrics-dashboard">OpenSearch Component Release Metrics</a>: This dashboard provides an overview of metrics related to specific OpenSearch components, enabling teams to track the release status of individual components through detailed component-level release metrics.
     <br><br>
     <a href="#test-results-dashboard">OpenSearch Release Build and Integration Test Results</a>: This dashboard focuses on build and integration test failures. It is a critical dashboard for component-level release owners, as it highlights build and integration test issues that need to be resolved to avoid delays or problems during the release process.
+    <br><br>
+    <a href="#flaky-test-among-releases">Component Integration Test Flakiness across Releases</a>: This dashboard tracks component integration test flakiness across releases and showcases flaky tests failing over multiple releases, to view plugin specific results filter by plugin name, RC, and version as required.
 </p>
 
 <h2>Release Version</h2>
@@ -184,20 +174,27 @@ metrics_height_mobile: 6000
 
 <div id="metrics-dashboard" class="dashboard-container">
     <h1 onclick="openModal('modal1')">OpenSearch Release Metrics</h1>
-    <a id="metrics-dashboard-link" href="#" target="_blank" class="button">Direct Link to Metrics Dashboard</a>
+<br><br>
+    <a id="metrics-dashboard-link" href="https://metrics.opensearch.org/_dashboards/app/dashboards?security_tenant=global#/view/12d47dd0-e0cc-11ee-86f3-3358a59f8c46" target="_blank" class="button">Direct Link to Metrics Dashboard</a>
     <iframe id="metrics-iframe" width="100%" height="1300"></iframe>
 </div>
 
 <div id="component-metrics-dashboard" class="dashboard-container">
     <h1 onclick="openModal('modal2')">OpenSearch Component Release Metrics</h1>
-    <a id="component-metrics-dashboard-link" href="#" target="_blank" class="button">Direct Link to Component Metrics Dashboard</a>
+    <a id="component-metrics-dashboard-link" href="https://metrics.opensearch.org/_dashboards/app/dashboards?security_tenant=global#/view/be62b350-6b06-11ef-8d6b-d50babf51bc6" target="_blank" class="button">Direct Link to Component Metrics Dashboard</a>
     <iframe id="component-metrics-iframe" width="100%" height="{{ page.metrics_height_desktop }}"></iframe>
 </div>
 
 <div id="test-results-dashboard" class="dashboard-container">
     <h1 onclick="openModal('modal3')">OpenSearch Release Build and Integration Test Results</h1>
-    <a id="test-results-dashboard-link" href="#" target="_blank" class="button">Direct Link to Test Results Dashboard</a>
+    <a id="test-results-dashboard-link" href="https://metrics.opensearch.org/_dashboards/app/dashboards?security_tenant=global#/view/21aad140-49f6-11ef-bbdd-39a9b324a5aa" target="_blank" class="button">Direct Link to Test Results Dashboard</a>
     <iframe id="test-results-iframe" width="100%" height="{{ page.metrics_height_desktop }}"></iframe>
+</div>
+
+<div id="flaky-test-among-releases" class="dashboard-container">
+    <h1 onclick="openModal('modal4')">Component Integration Test Flakiness across Releases</h1>
+    <a id="flaky-test-dashboard-link" href="https://metrics.opensearch.org/_dashboards/app/dashboards?security_tenant=global#/view/b9ddd8e0-fca6-11f0-8101-b5cbd22b28f2" target="_blank" class="button">Direct Link to Flaky Test Dashboard</a>
+    <iframe id="flaky-test-iframe" width="100%" height="{{ page.metrics_height_desktop }}"></iframe>
 </div>
 
 
@@ -237,6 +234,18 @@ metrics_height_mobile: 6000
     </div>
 </div>
 
+<div id="modal4" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="close" onclick="closeModal('modal4')">&times;</span>
+            Component Integration Test Flakiness across Releases
+        </div>
+        <div class="modal-body">
+            <iframe id="modal4-iframe" width="100%" height="100%"></iframe>
+        </div>
+    </div>
+</div>
+
 <script>
     const versions = {
         {% for version in page.release_versions %}
@@ -262,15 +271,20 @@ metrics_height_mobile: 6000
 
             const componentMetricsUrl = `${baseUrl}/view/be62b350-6b06-11ef-8d6b-d50babf51bc6?embed=true&_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now%2Fd,to:now%2Fd))&_a=(description:'',filters:!(('$state':(store:appState),meta:(alias:!n,controlledBy:'1725485220320',disabled:!f,index:'512c9c70-e0b3-11ee-9a74-07cd3b4ff414',key:version.keyword,negate:!f,params:(query:'${selectedVersion}'),type:phrase),query:(match_phrase:(version.keyword:'${selectedVersion}')))),fullScreenMode:!f,options:(hidePanelTitles:!f,useMargins:!t),query:(language:kuery,query:''),timeRestore:!t,title:'OpenSearch%20Component%20Release%20Metrics',viewMode:view)&show-top-menu=true&show-query-input=true&show-time-filter=true`;
 
+            const flakyTestUrl = `${baseUrl}/view/flaky-test-dashboard-id?embed=true&_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-90d,to:now))&_a=(description:'Component%20Integration%20Test%20Flakiness%20across%20Releases',filters:!(('$state':(store:appState),meta:(alias:!n,disabled:!f,key:version,negate:!f,params:(query:'${selectedVersion}'),type:phrase),query:(match_phrase:(version:'${selectedVersion}')))),fullScreenMode:!f,options:(hidePanelTitles:!f,useMargins:!t),query:(language:kuery,query:''),timeRestore:!t,title:'Component%20Integration%20Test%20Flakiness%20across%20Releases',viewMode:view)&show-top-menu=true&show-query-input=true&show-time-filter=true`;
+
             document.getElementById('metrics-iframe').src = metricsUrl;
             document.getElementById('test-results-iframe').src = testResultsUrl;
             document.getElementById('component-metrics-iframe').src = componentMetricsUrl;
+            document.getElementById('flaky-test-iframe').src = flakyTestUrl;
             document.getElementById('metrics-dashboard-link').href = metricsUrl;
             document.getElementById('test-results-dashboard-link').href = testResultsUrl;
             document.getElementById('component-metrics-dashboard-link').href = componentMetricsUrl;
+            document.getElementById('flaky-test-dashboard-link').href = flakyTestUrl;
             document.getElementById('modal1-iframe').src = metricsUrl;
             document.getElementById('modal2-iframe').src = componentMetricsUrl;
             document.getElementById('modal3-iframe').src = testResultsUrl;
+            document.getElementById('modal4-iframe').src = flakyTestUrl;
         } else {
             document.getElementById('release-issue').innerHTML = '';
             document.getElementById('release-retro-issue').innerHTML = '';
@@ -281,20 +295,28 @@ metrics_height_mobile: 6000
 
             const defaultComponentMetricsUrl = `${baseUrl}/view/be62b350-6b06-11ef-8d6b-d50babf51bc6?embed=true&_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now%2Fd,to:now%2Fd))&_a=(description:'',filters:!(),fullScreenMode:!f,options:(hidePanelTitles:!f,useMargins:!t),query:(language:kuery,query:''),timeRestore:!t,title:'OpenSearch%20Component%20Release%20Metrics',viewMode:view)&show-top-menu=true&show-query-input=true&show-time-filter=true`;
 
+            const defaultFlakyTestUrl = `${baseUrl}/view/b9ddd8e0-fca6-11f0-8101-b5cbd22b28f2?_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-6M,to:now))&_a=(description:'',filters:!(),fullScreenMode:!f,options:(hidePanelTitles:!f,useMargins:!t),query:(language:kuery,query:''),timeRestore:!t,title:'Component%20Integration%20Test%20Flakiness%20across%20Releases',viewMode:view)`;
+
             document.getElementById('metrics-iframe').src = defaultMetricsUrl;
             document.getElementById('test-results-iframe').src = defaultTestResultsUrl;
             document.getElementById('component-metrics-iframe').src = defaultComponentMetricsUrl;
+            document.getElementById('flaky-test-iframe').src = defaultFlakyTestUrl;
             document.getElementById('metrics-dashboard-link').href = defaultMetricsUrl;
             document.getElementById('test-results-dashboard-link').href = defaultTestResultsUrl;
             document.getElementById('component-metrics-dashboard-link').href = defaultComponentMetricsUrl;
+            document.getElementById('flaky-test-dashboard-link').href = defaultFlakyTestUrl;
             document.getElementById('modal1-iframe').src = defaultMetricsUrl;
             document.getElementById('modal2-iframe').src = defaultComponentMetricsUrl;
             document.getElementById('modal3-iframe').src = defaultTestResultsUrl;
+            document.getElementById('modal4-iframe').src = defaultFlakyTestUrl;
         }
     }
     document.addEventListener('DOMContentLoaded', function () {
         const defaultVersion = "{{ page.release_versions[0].version }}";
-        document.querySelector(`.version-item[data-version="${defaultVersion}"]`).classList.add('selected');
+        const versionElement = document.querySelector(`.version-item[data-version="${defaultVersion}"]`);
+        if (versionElement) {
+            versionElement.classList.add('selected');
+        }
         updateDashboard(defaultVersion);
     });
     document.getElementById('version-selector').addEventListener('click', function (event) {
